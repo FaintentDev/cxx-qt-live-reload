@@ -1,0 +1,3 @@
+# build time is now 30s -> 20s
+[build]
+rustc-wrapper = "sccache"

@@ -1,0 +1,13 @@
+[workspace]
+members = ["method1", "method2", "method3"]
+resolver = "3"
+
+[workspace.dependencies]
+cxx = "1.0.190"
+cxx-qt = "0.7.3"
+cxx-qt-lib = { version = "0.7.3", features = [
+	"qt_full",
+	"link_qt_object_files",
+] }
+cxx-qt-build = "0.7.3"
+notify = "8"

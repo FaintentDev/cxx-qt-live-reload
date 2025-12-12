@@ -1,0 +1,4 @@
+{
+  "qt-qml.qmlls.enabled": false,
+  "rust-analyzer.server.extraEnv": {}
+}
