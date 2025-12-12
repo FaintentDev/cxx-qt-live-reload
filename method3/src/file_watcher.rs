@@ -46,6 +46,7 @@ impl Default for FileWatcherRust {
 }
 
 impl qobject::FileWatcher {
+	#[cfg(debug_assertions)]
 	pub fn start_watching(mut self: Pin<&mut Self>) {
 		if self.is_watching {
 			return;
@@ -94,4 +95,7 @@ impl qobject::FileWatcher {
 			}
 		});
 	}
+
+	#[cfg(not(debug_assertions))]
+	pub fn start_watching(self: Pin<&mut Self>) {}
 }

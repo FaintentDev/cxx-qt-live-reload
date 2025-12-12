@@ -13,8 +13,15 @@ fn main() {
 		let mut engine = QQmlApplicationEngine::new();
 
 		if let Some(engine) = engine.as_mut() {
-			let qml_path = format!("{}/qml/main.qml", env!("CARGO_MANIFEST_DIR"));
-			engine.load(&QUrl::from_local_file(&qml_path.into()));
+			#[cfg(debug_assertions)]
+			{
+				let qml_path = format!("{}/qml/main.qml", env!("CARGO_MANIFEST_DIR"));
+				engine.load(&QUrl::from_local_file(&qml_path.into()));
+			}
+			#[cfg(not(debug_assertions))]
+			{
+				engine.load(&QUrl::from("qrc:/qt/qml/org/cxx_qt_live_reload/qml/main.qml"));
+			}
 		}
 		if let Some(engine) = engine.as_mut() {
 			engine
