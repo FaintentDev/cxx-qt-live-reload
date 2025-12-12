@@ -1,0 +1,12 @@
+[package]
+name = "method4"
+version = "0.1.0"
+edition = "2024"
+
+[build-dependencies]
+cxx-qt-build.workspace = true
+
+[dependencies]
+cxx.workspace = true
+cxx-qt.workspace = true
+cxx-qt-lib.workspace = true
