@@ -8,8 +8,6 @@ pub mod ffi {
 		type QString = cxx_qt_lib::QString;
 
 		include!("live_reload.h");
-
-		// Map the C++ functions we wrote
 		unsafe fn init_live_reload(engine: *mut QQmlApplicationEngine, path: &QString);
 	}
 }

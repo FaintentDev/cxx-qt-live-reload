@@ -7,6 +7,7 @@ fn main() {
 	let mut app = QGuiApplication::new();
 	let mut engine = QQmlApplicationEngine::new();
 
+	// Initialize live reload
 	let ui_path = QString::from(format!("{}/qml", env!("CARGO_MANIFEST_DIR")));
 	unsafe {
 		live_reload::ffi::init_live_reload(engine.as_mut_ptr(), &ui_path);

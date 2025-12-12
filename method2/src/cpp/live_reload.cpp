@@ -8,6 +8,8 @@
 #include <QQuickItem>
 #include <QQuickWindow>
 #include <QFileSystemWatcher>
+#include <QUrlQuery>
+#include <QDateTime>
 
 #include "live_reload.h"
 
@@ -21,39 +23,31 @@ void init_live_reload(QQmlApplicationEngine *engine, const QString &path) {
             w->addPath(i.absoluteFilePath());
     }
 
-    QUrl mainPath = QUrl::fromLocalFile(path + "/App.qml");
-
     QObject::connect(w, &QFileSystemWatcher::fileChanged, [=](const QString &file) {
         QTimer::singleShot(50, [=] {
-            static QQuickItem *previousItem = nullptr;
             auto wnd = qobject_cast<QQuickWindow *>(engine->rootObjects().first());
-            w->addPath(file);
+            if (!wnd)
+                return;
 
-            auto children = wnd->contentItem()->childItems();
-            if (!children.isEmpty()) {
-                auto itm = children.first();
-                if (itm->objectName() == "App" || itm->objectName() == "AppLoader") {
-                    itm->setParentItem(nullptr);
-                    if (itm == previousItem) previousItem = nullptr;
-                    delete itm;
-                }
+            QObject *loaderObj =
+                wnd->findChild<QObject*>("AppLoader", Qt::FindChildrenRecursively);
+            if (!loaderObj) {
+                qWarning() << "AppLoader not found!";
+                return;
             }
 
-            if (previousItem) {
-                auto toDelete = previousItem;
-                QTimer::singleShot(5000, [=] {
-                    toDelete->setParentItem(nullptr);
-                    delete toDelete;
-                });
-            }
+            // Clear QML cache
             engine->clearComponentCache();
 
-            QQmlComponent component(engine, mainPath, wnd);
-            previousItem = qobject_cast<QQuickItem *>(component.create());
-            if (previousItem) {
-                previousItem->setObjectName("App");
-                previousItem->setParentItem(wnd->contentItem());
-            }
+            // Build the canonical, absolute form of the path
+            QUrl mainPath = QUrl::fromLocalFile(path + "/App.qml");
+            QUrlQuery cacheQuery;
+            cacheQuery.addQueryItem("t", QString::number(QDateTime::currentMSecsSinceEpoch()));
+            mainPath.setQuery(cacheQuery);
+
+            // Force reload
+            loaderObj->setProperty("source", QVariant());
+            loaderObj->setProperty("source", mainPath);
         });
     });
 }

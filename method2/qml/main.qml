@@ -12,23 +12,19 @@ Window {
 		id: counter
 	}
 
-    Loader {
-        id: appLoader;
-        objectName: "AppLoader";
-        anchors.fill: parent;
-        asynchronous: true;
-        // opacity: appLoader.status == Loader.Ready? 1 : 0.5;
-        // NumberAnimation on opacity { }
+	Loader {
+		id: appLoader;
+		objectName: "AppLoader";
+		anchors.fill: parent;
+		asynchronous: true;
+		source: "App.qml"
+		// Optional: for the reload counter
         onStatusChanged: {
             if (status == Loader.Ready) {
-                // Qt.callLater(item.isMobileLayoutChanged);
-                // Qt.callLater(item.isLandscapeChanged);
+				counter.reloadCounter++;
             }
         }
-        sourceComponent: Component {
-            App { objectName: "App"; }
-        }
-    }
+	}
 
 	// Optional: Visual indicator that reload happened
 	Text {
