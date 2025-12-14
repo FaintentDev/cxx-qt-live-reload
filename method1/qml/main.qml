@@ -8,32 +8,19 @@ Window {
 	visible: true
 	title: "CXX Qt Live Reload"
 
-	LiveReloader {
-		id: reloader
-		onQmlChanged: contentLoader.reload()
-		// Start watching immediately
-		Component.onCompleted: reloader.startWatching()
+	AppReloader {
+		id: appReloader
+		source: "App.qml"
 	}
 
 	Loader {
-		id: contentLoader
+		id: loader
 		anchors.fill: parent
-		source: "App.qml"
-
-		property int counter: 0
-
-		function reload() {
-			console.log("Reloading QML...")
-			source = ""
-			reloader.reloadQmlCache()
-			source = "App.qml"
-			counter++
-		}
+		source: appReloader.source
 	}
 
-	// Optional: Visual indicator that reload happened
 	Text {
 		anchors.bottom: parent.bottom
-		text: "Reloads: " + contentLoader.counter
+		text: "Reloads: " + appReloader.counter
 	}
 }

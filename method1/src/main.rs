@@ -1,14 +1,14 @@
 use cxx_qt_lib::{QGuiApplication, QQmlApplicationEngine, QUrl};
 
-mod engine;
-mod live_reloader;
+mod app_reloader;
+mod engine_ext;
 
 fn main() {
 	let mut app = QGuiApplication::new();
 	let mut engine = QQmlApplicationEngine::new();
 
 	unsafe {
-		engine::ffi::set_global_engine(engine.as_mut_ptr());
+		engine_ext::ffi::set_global_engine(engine.as_mut_ptr());
 	}
 
 	if let Some(engine) = engine.as_mut() {

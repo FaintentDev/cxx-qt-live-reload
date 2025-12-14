@@ -1,4 +1,4 @@
-#include "engine.h"
+#include "engine_ext.h"
 
 // Global pointer to the engine
 static QQmlApplicationEngine* g_engine = nullptr;
