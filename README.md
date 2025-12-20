@@ -4,6 +4,8 @@ Method 1: uses a file watcher on the rust side to notify of changes then updates
 Method 2: this is for you C++ monkeys out there
 (see [live_reload.cpp](method2/src/cpp/live_reload.cpp))
 
+> NOTE: method 2 needs fixing: nested components in App.qml (like TestComponent.qml) arent always updated
+
 Method 3: instead of clearing the cache it reloads the entire app upon quit in a loop
 (see [main.rs](method3/src/main.rs))
 

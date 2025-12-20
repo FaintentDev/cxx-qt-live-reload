@@ -17,9 +17,16 @@ pub mod qobject {
 	extern "RustQt" {
 		#[qobject]
 		#[qml_element]
+		#[qproperty(bool, active)]
 		#[qproperty(QUrl, source)]
 		#[qproperty(i32, counter)]
 		type AppReloader = super::AppReloaderRust;
+
+		#[qsignal]
+		fn reload(self: Pin<&mut AppReloader>);
+
+		#[qinvokable]
+		fn refresh_loader(self: Pin<&mut AppReloader>);
 	}
 
 	impl cxx_qt::Initialize for AppReloader {}
@@ -28,6 +35,7 @@ pub mod qobject {
 
 #[derive(Default)]
 pub struct AppReloaderRust {
+	active: bool,
 	source: QUrl,
 	counter: i32,
 }
@@ -54,28 +62,18 @@ impl cxx_qt::Initialize for qobject::AppReloader {
 					Ok(event) => {
 						let kind = event.kind;
 						if kind.is_modify() || kind.is_create() || kind.is_remove() {
-							if last_handled.elapsed() < Duration::from_millis(50) {
+							// Skip consecutive events within 100ms
+							if last_handled.elapsed() < Duration::from_millis(100) {
 								continue;
 							}
+
+							// Ensure changes are saved
+							thread::sleep(Duration::from_millis(100));
 							last_handled = Instant::now();
+
 							qt_thread
-								.queue(|mut qobject| {
-									// Clear C++ Cache
-									crate::engine_ext::ffi::reload_qml_cache();
-									// Set the new source
-									let mut main_path = QUrl::from_local_file(&"method1/qml/App.qml".into());
-									// let mut main_path = QUrl::from_local_file(&qml_path.join("App.qml").into());
-									main_path.set_query(
-										&format!(
-											"t={}",
-											SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs()
-										)
-										.into(),
-									);
-									qobject.as_mut().set_source(main_path);
-									// Increment counter
-									let next = qobject.counter() + 1;
-									qobject.set_counter(next);
+								.queue(|qobject| {
+									qobject.reload();
 								})
 								.unwrap();
 						}
@@ -84,5 +82,25 @@ impl cxx_qt::Initialize for qobject::AppReloader {
 				}
 			}
 		});
+	}
+}
+
+impl qobject::AppReloader {
+	pub fn refresh_loader(mut self: Pin<&mut Self>) {
+		// Clear C++ Cache
+		crate::engine_ext::ffi::reload_qml_cache();
+
+		// Set the source as a local file
+		let mut src = QUrl::from_local_file(&format!("{}/qml/App.qml", env!("CARGO_MANIFEST_DIR")).into());
+		// Bust the cache with a query
+		src.set_query(&format!("t={}", SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs()).into());
+
+		// Re-activate the Loader
+		self.as_mut().set_source(src);
+		self.as_mut().set_active(true);
+
+		// Increment the counter
+		let next = self.counter() + 1;
+		self.set_counter(next);
 	}
 }

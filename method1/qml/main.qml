@@ -10,12 +10,19 @@ Window {
 
 	AppReloader {
 		id: appReloader
+		active: true
 		source: "App.qml"
+		onReload: {
+			active = false
+			source = ""
+			Qt.callLater(refreshLoader)
+		}
 	}
 
 	Loader {
 		id: loader
 		anchors.fill: parent
+		active: appReloader.active
 		source: appReloader.source
 	}
 
