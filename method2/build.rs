@@ -10,7 +10,7 @@ fn main() {
 		.qml_module(QmlModule {
 			uri: "org.cxx_qt_live_reload",
 			rust_files: &["src/counter.rs"],
-			qml_files: &["qml/main.qml", "qml/App.qml"],
+			qml_files: &["qml/main.qml", "qml/App.qml", "qml/TestComponent.qml"],
 			..Default::default()
 		})
 		.qt_module("Quick") // for QQuickItem and QQuickWindow to resolve in live_reload.cpp

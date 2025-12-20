@@ -7,7 +7,7 @@ fn qml_files() -> &'static [&'static str] {
 
 #[cfg(not(debug_assertions))]
 fn qml_files() -> &'static [&'static str] {
-	&["qml/Main.qml", "qml/MainComponent.qml"]
+	&["qml/Main.qml", "qml/MainComponent.qml", "qml/OtherComponent.qml"]
 }
 
 fn main() {

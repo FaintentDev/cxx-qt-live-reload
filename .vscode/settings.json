@@ -1,4 +1,5 @@
 {
-  "qt-qml.qmlls.enabled": false,
-  "rust-analyzer.server.extraEnv": {}
+    "qt-qml.qmlls.enabled": false,
+    "rust-analyzer.server.extraEnv": {},
+    "qmlFormat.extraArguments": ["--tabs", "--semicolon-rule", "essential"]
 }

@@ -18,11 +18,11 @@ Window {
 	Loader {
 		id: loader
 		anchors.fill: parent
-		source: "file:///<REPO_DIRECTORY>/method4/qml/MainComponent.qml?t=" + Date.now()
+		source: "file:///C:/Users/jerem/Documents/Dev-Testing/.rust/.ui/.qt/cxx-qt-live-reload/method4/qml/MainComponent.qml?t=" + Date.now()
 
 		function clearCacheAndReload() {
 			reloader.clearCache()
-			source = "file:///<REPO_DIRECTORY>/method4/qml/MainComponent.qml?t=" + Date.now()
+			source = "file:///C:/Users/jerem/Documents/Dev-Testing/.rust/.ui/.qt/cxx-qt-live-reload/method4/qml/MainComponent.qml?t=" + Date.now()
 			active = true
 		}
 
@@ -33,8 +33,7 @@ Window {
 		}
 
 		onStatusChanged: {
-			if (loader.status === Loader.Error || loader.status === Loader.Null) {
-			} else {
+			if (loader.status === Loader.Error || loader.status === Loader.Null) {} else {
 				if (item) {
 					if (item.implicitWidth !== "undefined" && item.implicitWidth > window.width)
 						window.width = Math.min(item.implicitWidth, Screen.width)
